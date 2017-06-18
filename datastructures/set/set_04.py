@@ -15,12 +15,11 @@ class Hashedbitset():
         self._hasher = Hasher()
 
     def Add(self, item):
-        n = self._hasher.hash(item, 1, self._size)[0]
-        self._value.Add(n)
+        self._value.Add(self._hasher.hash(item, 1)[0])
 
     def Size(self):
         return self._value.Size()
 
     def Contains(self, item):
-        n = self._hasher.hash(item, 1, self._size)[0]
+        n = self._hasher.hash(item, 1)[0]
         return self._value.Contains(n)

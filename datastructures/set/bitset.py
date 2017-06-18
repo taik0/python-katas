@@ -13,16 +13,14 @@ class Bitset():
         return str(map(int, self._value))
 
     def Add(self, item):
-        idx = item // 64
-        pos = item % 64
+        idx = ( item % self._size ) // 64
+        pos = ( item % self._size ) % 64
         self._value[idx] |= ( 1 << pos)
 
     def Size(self):
         return self._size
 
     def Contains(self, item):
-        idx = item // 64
-        pos = item % 64
-        if idx > self._words_total:
-            return False
+        idx = ( item % self._size ) // 64
+        pos = ( item % self._size ) % 64
         return (self._value[idx]&(1<<pos)!=0)
