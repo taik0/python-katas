@@ -10,9 +10,9 @@ class Node(object):
 
     def _code_char(self, char, code = ''):
         if char in self.left.value:
-            return self.left._code_char(char, code + '1')
+            return self.left._code_char(char, code + '0')
         elif char in self.right.value:
-            return self.right._code_char(char, code + '0')
+            return self.right._code_char(char, code + '1')
 
     def _decode_char(self, message):
         if len(self.value) == 1:
