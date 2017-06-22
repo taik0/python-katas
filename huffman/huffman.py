@@ -14,7 +14,7 @@ class Huffman():
         for item in self._freq_map:
             symbols.append(Leaf(item[0], item[1]))
         for i in range(len(self._freq_map)):
-            symbols = sorted(symbols, key=lambda symbols: symbols.weight)
+            symbols = sorted(symbols, key=lambda symbol: symbol.weight)
             symbol_to_add=Node(symbols[1].value + symbols[0].value,
                                 symbols[1].weight + symbols[0].weight, symbols[1], symbols[0])
             if len(symbols) == 2:
