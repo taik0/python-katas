@@ -18,9 +18,9 @@ class Node(object):
         if len(self.value) == 1:
             return message, self.value
         for bit in message:
-            if bit == '1':
+            if bit == '0':
                 return self.left._decode_char(message[1:])
-            elif bit == '0':
+            elif bit == '1':
                 return self.right._decode_char(message[1:])
 
 class Leaf(object):
