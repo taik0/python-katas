@@ -2,13 +2,13 @@
 
 from operator import itemgetter
 
-def gen_freq_map(dataset, string):
+def gen_freq_map(string):
     result = {}
-    for i in dataset:
-        result[i] = 0
-    for char in string.lower():
-        if char in dataset:
+    for char in string:
+        if char in result:
             result[char] += 1
+        else:
+            result[char] = 1
     return sort_freq_map(result)
 
 def sort_freq_map(freq_map):
