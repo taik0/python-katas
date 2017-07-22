@@ -17,25 +17,38 @@ class Crane():
         """
         pon el objeto X encima del objeto Y
         """
-        pass
+        dest = self._table.get(item2)
+        self.FindSpace(item2)
+        self.Grasp(item1)
+        self.Move(item1, dest.col)
+        self.Ungrasp(item1)
 
     def PutOnTable(self, item):
         """
         pon el objeto X en el suelo (espacio no definido)
         """
-        pass
+        dest = self.FindSpaceOnTable()
+        if dest < 0:
+            return "No space to get rid of the block"
+        self.Grasp(item)
+        self.Move(item, dest)
+        self.Ungrasp(item)
+        return True
 
     def FindSpace(self, item):
         """
         haz sitio sobre el objeto X
         """
-        pass
+        if self.pickable(item):
+            return True
+        self.ClearTop(item)
+        return self.FindSpace(item)
 
     def FindSpaceOnTable(self):
         """
         encuentra la primer columna con espacio en el suelo
         """
-        for i in range(self._table.height):
+        for i in range(self._table.width):
             if self._table.is_empty(i, 0):
                 return i
         return -1
@@ -63,7 +76,17 @@ class Crane():
         """
         despeja la parte superior del objeto X
         """
-        pass
+        stack = []
+        blk = self._table.get(item)
+        if self.pickable(blk.name):
+            return True
+        for row in range(blk.row + 1, self._table.width):
+            if self._table.grid[blk.col][row] != '':
+                stack.append(self._table.grid[blk.col][row].name)
+        while len(stack) > 0:
+            new_blk = stack.pop()
+            self.GetRidOf(new_blk)
+
 
     def pickable(self, item):
         obj = self._table.get(item)
@@ -75,47 +98,34 @@ class Crane():
         """
         pilla el bloque X
         """
-        pass
-        
-    # def Pick(self, item):
-    #     """
-    #     pilla el bloque X
-    #     """
-    #     if not self.pickable(item):
-    #         print "Cannot pick the block"
-    #         return False
-    #     self.picked = self._table.get(item)
-    #     if self.picked == None:
-    #         return False
-    #     self._table.grid[self.picked.col][self.picked.row] = ''
-    #     return True
+        if self._table.get(item) != None:
+            return self.ClearTop(item)
+        return False
 
     def GetRidOf(self, item):
         """
         saca el objeto X del medio (edited)
         """
-        dest = self.FindSpaceOnTable()
-        if dest < 0:
-            return "No space to get rid of the block"
-        self.Move(item, dest)
+        if self._table.get(item) != None:
+            return self.PutOnTable(item)
+        return False
 
 
 if __name__ == '__main__':
-    t = Table(5,5)
-    t.set(0,0, Block('B0000'))
-    t.set(0,1, Block('B0001'))
-    t.set(1,0, Block('B0002'))
-    t.set(1,1, Block('B0003'))
+    t = Table(15,15)
+    t.set(0,0, Block('B0000',0 ,0))
+    t.set(0,1, Block('B0001', 0, 1))
+    t.set(0,2, Block('B0004', 0, 2))
+    t.set(0,3, Block('B0005', 0, 3))
+    t.set(0,4, Block('B0006', 0, 4))
+    t.set(1,0, Block('B0002', 1, 0))
+    t.set(1,1, Block('B0003', 1, 1))
 
     #helper.init_table(t, 4)
 
     arm = Crane(t)
     print arm
-    arm.Move('B0001', 1)
+    print "---"
+    arm.PutOn('B0001', 'B0002')
     print arm
-    arm.Move('B0000', 2)
-    print arm
-    arm.GetRidOf('B0001')
-    arm.GetRidOf('B0003')
-    print arm
-    print arm.FindSpaceOnTable()
+    print "---"
