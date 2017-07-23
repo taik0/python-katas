@@ -2,13 +2,15 @@
 
 class GoalTree():
 
-    def __init__(self, name):
+    def __init__(self, name, children = []):
         self.name = name
         self.parent = None
-        self._children = []
+        self._children = children
 
     def add_child(self, child):
-        return self._children.append(child)
+        child.set_parent = self.name
+        self._children.append(child)
+
 
     def children(self):
         for child in self._children:
