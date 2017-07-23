@@ -2,6 +2,7 @@
 
 from table import Table
 from block import Block
+from goaltree import GoalTree
 import helper
 
 class Crane():
@@ -17,32 +18,46 @@ class Crane():
         """
         pon el objeto X encima del objeto Y
         """
+        message = 'PutOn %s %s' % (item1, item2)
+        gtree = GoalTree(message)
         dest = self._table.get(item2)
-        self.FindSpace(item2)
-        self.Grasp(item1)
-        self.Move(item1, dest.col)
-        self.Ungrasp(item1)
+        gtree.add_child(self.FindSpace(item2))
+        gtree.add_child(self.Grasp(item1))
+        gtree.add_child(self.Move(item1, dest.col))
+        gtree.add_child(self.Ungrasp(item1))
+        for child in gtree.children():
+            child.set_parent(message)
+        return gtree
 
     def PutOnTable(self, item):
         """
         pon el objeto X en el suelo (espacio no definido)
         """
+        message = 'PutOnTable %s' % (item)
+        gtree = GoalTree(message)
         dest = self.FindSpaceOnTable()
         if dest < 0:
             return "No space to get rid of the block"
-        self.Grasp(item)
-        self.Move(item, dest)
-        self.Ungrasp(item)
-        return True
+        gtree.add_child(self.Grasp(item))
+        gtree.add_child(self.Move(item, dest))
+        gtree.add_child(self.Ungrasp(item))
+        for child in gtree.children():
+            child.set_parent(message)
+        return gtree
 
     def FindSpace(self, item):
         """
         haz sitio sobre el objeto X
         """
+        message = 'FindSpace %s' % (item)
+        gtree = GoalTree(message)
         if self.pickable(item):
-            return True
-        self.ClearTop(item)
-        return self.FindSpace(item)
+            return gtree
+        gtree.add_child(self.ClearTop(item))
+        gtree.add_child(self.FindSpace(item))
+        for child in gtree.children():
+            child.set_parent(message)
+        return gtree
 
     def FindSpaceOnTable(self):
         """
@@ -57,6 +72,8 @@ class Crane():
         """
         mueve el objeto X a la columna Y (y apilalo)
         """
+        message = 'Move %s %i' % (item, col)
+        gtree = GoalTree(message)
         picked = self._table.get(item)
         if picked == None:
             return False
@@ -64,28 +81,36 @@ class Crane():
         next_row = self._table.next_empty(col)
         self._table.set(col, next_row, picked)
         self.picked = ''
-        return True
+        return gtree
 
     def Ungrasp(self, item):
         """
         suelta el bloque X
         """
         self.picked = ''
+        message = 'Ungrasp %s' % (item)
+        gtree = GoalTree(message)
+        return gtree
 
     def ClearTop(self, item):
         """
         despeja la parte superior del objeto X
         """
+        message = 'ClearTop %s' % (item)
+        gtree = GoalTree(message)
         stack = []
         blk = self._table.get(item)
         if self.pickable(blk.name):
-            return True
+            return gtree
         for row in range(blk.row + 1, self._table.width):
             if self._table.grid[blk.col][row] != '':
                 stack.append(self._table.grid[blk.col][row].name)
         while len(stack) > 0:
             new_blk = stack.pop()
-            self.GetRidOf(new_blk)
+            gtree.add_child(self.GetRidOf(new_blk))
+        for child in gtree.children():
+            child.set_parent(message)
+        return gtree
 
 
     def pickable(self, item):
@@ -98,17 +123,25 @@ class Crane():
         """
         pilla el bloque X
         """
+        message = 'Grasp %s' % (item)
+        gtree = GoalTree(message)
         if self._table.get(item) != None:
-            return self.ClearTop(item)
-        return False
+            gtree.add_child(self.ClearTop(item))
+            for child in gtree.children():
+                child.set_parent(message)
+        return gtree
 
     def GetRidOf(self, item):
         """
         saca el objeto X del medio (edited)
         """
+        message = 'GetRidOf %s' % (item)
+        gtree = GoalTree(message)
         if self._table.get(item) != None:
-            return self.PutOnTable(item)
-        return False
+            gtree.add_child(self.PutOnTable(item))
+            for child in gtree.children():
+                child.set_parent(message)
+        return gtree
 
 
 if __name__ == '__main__':
@@ -125,7 +158,12 @@ if __name__ == '__main__':
 
     arm = Crane(t)
     print arm
-    print "---"
-    arm.PutOn('B0001', 'B0002')
-    print arm
+    x = arm.PutOn('B0006', 'B0003')
+    print x.Why('PutOn B0006 B0003')
+    print x.How('PutOn B0006 B0003')
+    print x.How('Grasp B0006')
+    print x.Why('ClearTop B0006')
+    print x.How('Ungrasp B0006')
+    print x.How('Fuck the police')
+
     print "---"
