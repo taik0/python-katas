@@ -2,15 +2,16 @@
 
 class GoalTree():
 
-    def __init__(self, name, children = []):
+    def __init__(self, name, childs = []):
         self.name = name
         self.parent = None
-        self._children = children
+        self._children = []
+        for child in childs:
+            self.add_child(child)
 
     def add_child(self, child):
-        child.set_parent = self.name
+        child.parent = self.name
         self._children.append(child)
-
 
     def children(self):
         for child in self._children:
@@ -19,8 +20,8 @@ class GoalTree():
     def bfs(self, command):
         if self.name == command:
             return self
-        q = list(self._children)
-        visited = []
+        q = [self]
+        visited = [self]
         while len(q) > 0:
             current = q.pop(0)
             if current.name == command:
@@ -30,9 +31,6 @@ class GoalTree():
                     visited.append(child)
                     q.append(child)
         return None
-
-    def set_parent(self, parent):
-        self.parent = parent
 
     def How(self, command):
         """

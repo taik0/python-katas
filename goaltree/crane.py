@@ -29,7 +29,7 @@ class Crane():
         message = 'PutOnTable %s' % (item)
         dest = self.FindSpaceOnTable()
         if dest < 0:
-            return "No space to get rid of the block"
+            raise "No space to get rid of the block"
         return GoalTree(message, [ self.Grasp(item), self.Move(item, dest), self.Ungrasp(item) ])
 
     def FindSpace(self, item):
@@ -57,8 +57,8 @@ class Crane():
         message = 'Move %s %i' % (item, col)
         picked = self._table.get(item)
         if picked == None:
-            return False
-        self._table.grid[picked.col][picked.row] = ''
+            raise Exception("Cant move")
+        self._table.grid[picked.col][picked.row] = None
         next_row = self._table.next_empty(col)
         self._table.set(col, next_row, picked)
         self.picked = ''
@@ -82,8 +82,8 @@ class Crane():
         blk = self._table.get(item)
         if self.pickable(blk.name):
             return gtree
-        for row in range(blk.row + 1, self._table.width):
-            if self._table.grid[blk.col][row] != '':
+        for row in range(blk.row +1, self._table.height):
+            if self._table.grid[blk.col][row] != None:
                 stack.append(self._table.grid[blk.col][row].name)
         while len(stack) > 0:
             new_blk = stack.pop()
@@ -119,25 +119,26 @@ class Crane():
 
 
 if __name__ == '__main__':
-    t = Table(15,15)
-    t.set(0,0, Block('B0000',0 ,0))
-    t.set(0,1, Block('B0001', 0, 1))
-    t.set(0,2, Block('B0004', 0, 2))
-    t.set(0,3, Block('B0005', 0, 3))
-    t.set(0,4, Block('B0006', 0, 4))
-    t.set(1,0, Block('B0002', 1, 0))
-    t.set(1,1, Block('B0003', 1, 1))
+    t = Table(22,5)
+    # t.set(0,0, Block('B0000',0 ,0))
+    # t.set(0,1, Block('B0001', 0, 1))
+    # t.set(0,2, Block('B0004', 0, 2))
+    # t.set(0,3, Block('B0005', 0, 3))
+    # t.set(0,4, Block('B0006', 0, 4))
+    # t.set(1,0, Block('B0002', 1, 0))
+    # t.set(1,1, Block('B0003', 1, 1))
 
-    #helper.init_table(t, 4)
+    helper.init_table(t, 30)
 
     arm = Crane(t)
     print arm
     x = arm.PutOn('B0006', 'B0003')
-    print x.Why('PutOn B0006 B0003')
-    print x.How('PutOn B0006 B0003')
-    print x.How('Grasp B0006')
-    print x.Why('ClearTop B0006')
-    print x.How('Ungrasp B0006')
-    print x.How('Fuck the police')
-
+    print "Why PutOn B0006 B0003? ", x.Why('PutOn B0006 B0003')
+    print "How PutOn B0006 B0003? ", x.How('PutOn B0006 B0003')
+    print "How Grasp B0006? ", x.How('Grasp B0006')
+    print "Why ClearTop B0006? ", x.Why('ClearTop B0006')
+    print "How Ungrasp B0006?", x.How('Ungrasp B0006')
+    print "How Fuck the police? ", x.How('Fuck the police')
+    print arm
     print "---"
+    print x
