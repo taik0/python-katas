@@ -1,18 +1,15 @@
-`PutOn X Y`: pon el objeto X encima del objeto Y
-`PutOnTable X`: pon el objeto X en el suelo (espacio no definido)
-`FindSpace X`: haz sitio sobre el objeto X
-`FindSpaceOnTable`: encuentra la primer columna con espacio en el suelo
-`Move X Y`: mueve el objeto X a la columna Y (y apilalo)
-`UnGrasp X`: suelta el bloque X
-`ClearTop X`: despeja la parte superior del objeto X
-`Grasp X`: pilla el bloque X
-`GetRidOf X`: saca el objeto X del medio (edited)
-
+# GoalTree (and-or-tree)
+- `PutOn X Y`: pon el objeto X encima del objeto Y
+- `PutOnTable X`: pon el objeto X en el suelo (espacio no definido)
+- `FindSpace X`: haz sitio sobre el objeto X
+- `FindSpaceOnTable`: encuentra la primer columna con espacio en el suelo
+- `Move X Y`: mueve el objeto X a la columna Y (y apilalo)
+- `UnGrasp X`: suelta el bloque X
+- `ClearTop X`: despeja la parte superior del objeto X
+- `Grasp X`: pilla el bloque X
+- `GetRidOf X`: saca el objeto X del medio (edited)
 
 https://files.slack.com/files-pri/T33C7RFU2-F6BDH15K3/captura_de_pantalla_2017-07-21_a_las_11.38.59.png
-
-deberías dejar un 25% de espacio libre como mínimo al inicializar el escenario
-
 
 orden lógico de desarrollo:
 - definir block (clase q representa el contenedor)
