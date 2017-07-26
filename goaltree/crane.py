@@ -9,7 +9,6 @@ class Crane():
 
     def __init__(self, t):
         self._table = t
-        self.picked = ''
 
     def __str__(self):
         return str(self._table)
@@ -61,14 +60,12 @@ class Crane():
         self._table.grid[picked.col][picked.row] = None
         next_row = self._table.next_empty(col)
         self._table.set(col, next_row, picked)
-        self.picked = ''
         return GoalTree(message)
 
     def Ungrasp(self, item):
         """
         suelta el bloque X
         """
-        self.picked = ''
         message = 'Ungrasp %s' % (item)
         return GoalTree(message)
 
@@ -120,25 +117,14 @@ class Crane():
 
 if __name__ == '__main__':
     t = Table(22,5)
-    # t.set(0,0, Block('B0000',0 ,0))
-    # t.set(0,1, Block('B0001', 0, 1))
-    # t.set(0,2, Block('B0004', 0, 2))
-    # t.set(0,3, Block('B0005', 0, 3))
-    # t.set(0,4, Block('B0006', 0, 4))
-    # t.set(1,0, Block('B0002', 1, 0))
-    # t.set(1,1, Block('B0003', 1, 1))
-
     helper.init_table(t, 30)
-
     arm = Crane(t)
     print arm
-    x = arm.PutOn('B0006', 'B0003')
-    print "Why PutOn B0006 B0003? ", x.Why('PutOn B0006 B0003')
-    print "How PutOn B0006 B0003? ", x.How('PutOn B0006 B0003')
-    print "How Grasp B0006? ", x.How('Grasp B0006')
-    print "Why ClearTop B0006? ", x.Why('ClearTop B0006')
-    print "How Ungrasp B0006?", x.How('Ungrasp B0006')
+    x = arm.PutOn('B0025', 'B0003')
+    print "Why PutOn B0025 B0003? ", x.Why('PutOn B0025 B0003')
+    print "How PutOn B0025 B0003? ", x.How('PutOn B0025 B0003')
+    print "How Grasp B0025? ", x.How('Grasp B0025')
+    print "Why ClearTop B0025? ", x.Why('ClearTop B0025')
+    print "How Ungrasp B0025?", x.How('Ungrasp B0025')
     print "How Fuck the police? ", x.How('Fuck the police')
     print arm
-    print "---"
-    print x
