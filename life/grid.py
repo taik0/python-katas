@@ -33,7 +33,11 @@ class Grid:
         """
         ans = ""
         for row in range(self._grid_height):
-            ans += str(self._cells[row])
+            for col in range(self._grid_width):
+                if self._cells[row][col] == LIVE:
+                    ans += '*'
+                else:
+                    ans += ' '
             ans += "\n"
         return ans
 
