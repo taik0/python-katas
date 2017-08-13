@@ -18,22 +18,22 @@ class Grid:
         Initializes grid to be DEAD, take height and width of grid as parameters
         Indexed by rows (left to right), then by columns (top to bottom)
         """
-        self._grid_height = grid_height
-        self._grid_width = grid_width
+        self._height = grid_height
+        self._width = grid_width
         if initial == None:
-            self._cells = [[DEAD for dummy_col in range(self._grid_width)]
-                            for dummy_row in range(self._grid_height)]
+            self._cells = [[DEAD for dummy_col in range(self._width)]
+                            for dummy_row in range(self._height)]
         else:
-            self._cells = [[initial[col][row] for col in range(self._grid_width)]
-                            for row in range(self._grid_height)]
+            self._cells = [[initial[row][col] for col in range(self._width)]
+                            for row in range(self._height)]
 
     def __str__(self):
         """
         Return multi-line string represenation for grid
         """
-        ans = ""
-        for row in range(self._grid_height):
-            for col in range(self._grid_width):
+        ans = ''
+        for row in range(self._height):
+            for col in range(self._width):
                 if self._cells[row][col] == LIVE:
                     ans += '*'
                 else:
@@ -42,39 +42,33 @@ class Grid:
         return ans
 
     def clone(self):
-        return Grid(self._grid_height, self._grid_width, self._cells)
+        return Grid(self._height, self._width, self._cells)
 
-    def get_grid_height(self):
+    def get_height(self):
         """
         Return the height of the grid for use in the GUI
         """
-        return self._grid_height
+        return self._height
 
-    def get_grid_width(self):
+    def get_width(self):
         """
         Return the width of the grid for use in the GUI
         """
-        return self._grid_width
+        return self._width
 
 
     def clear(self):
         """
         Clears grid to be DEAD
         """
-        self._cells = [[DEAD for dummy_col in range(self._grid_width)]
-                       for dummy_row in range(self._grid_height)]
+        self._cells = [[DEAD for dummy_col in range(self._width)]
+                       for dummy_row in range(self._height)]
 
-    def set_DEAD(self, row, col):
+    def set(self, row, col, state):
         """
         Set cell with index (row, col) to be DEAD
         """
-        self._cells[row][col] = DEAD
-
-    def set_LIVE(self, row, col):
-        """
-        Set cell with index (row, col) to be LIVE
-        """
-        self._cells[row][col] = LIVE
+        self._cells[row][col] = state
 
     def is_DEAD(self, row, col):
         """
@@ -82,28 +76,28 @@ class Grid:
         """
         return self._cells[row][col] == DEAD
 
+    def live_neighbors(self, row, col):
+        cells = self.neighbors(row, col)
+        alive = 0
+        for cell in cells:
+            if not self.is_DEAD(cell[0], cell[1]):
+                alive +=1
+        return alive
+
     def neighbors(self, row, col):
         """
         Returns horiz/vert neighbors of cell (row, col) as well as
         diagonal neighbors
         """
         ans = []
-        if row > 0:
-            ans.append((row - 1, col))
-        if row < self._grid_height - 1:
-            ans.append((row + 1, col))
-        if col > 0:
-            ans.append((row, col - 1))
-        if col < self._grid_width - 1:
-            ans.append((row, col + 1))
-        if (row > 0) and (col > 0):
-            ans.append((row - 1, col - 1))
-        if (row > 0) and (col < self._grid_width - 1):
-            ans.append((row - 1, col + 1))
-        if (row < self._grid_height - 1) and (col > 0):
-            ans.append((row + 1, col - 1))
-        if (row < self._grid_height - 1) and (col < self._grid_width - 1):
-            ans.append((row + 1, col + 1))
+        ans.append(((row - 1 % self._height), col))
+        ans.append((row + 1 % self._height, col))
+        ans.append((row, col - 1 % self._width))
+        ans.append((row, col + 1 % self._width))
+        ans.append((row - 1 % self._height, col - 1 % self._width))
+        ans.append((row - 1 % self._height, col + 1 % self._width))
+        ans.append((row + 1 % self._height, col - 1 % self._width))
+        ans.append((row + 1 % self._height, col + 1 % self._width))
         return ans
 
     def get_index(self, point, cell_size):
